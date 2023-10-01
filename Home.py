@@ -27,15 +27,15 @@ if selected == "Home":
     st.header(':rainbow[TOP ANIMATION IN IMDB]')
     st.subheader('Check Your Popular Animation')
     st.write('Obtained from the kaggle dataset')
+    
     title_search = st.text_input("Animation Title")
-    if st.button("search"):
-        df_result_search = df[df['Title'].str.contains(title_search,case=False, na=False)]
-
+    if st.button("Search"):
+        df_result_search = df[df['Title'].str.contains(title_search, case=False, na=False)]
         st.write("{} Results ".format(str(df_result_search.shape[0])))
-        st.dataframe(df_result_search)
-    else :
-        st.dataframe(df)
-        st.write('This data consists of 45716 rows and 14 columns')
+        st.dataframe(df_result_search[["Title", "User Rating"]])  
+    else:
+        st.dataframe(df[["Title", "User Rating"]])  
+        st.write('This data consists of {} rows and 2 columns'.format(df.shape[0]))
 
 if selected == "Animation Data":
     st.header(':rainbow[DATA-DATA ANIMATION]')
