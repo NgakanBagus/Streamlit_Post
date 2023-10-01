@@ -14,7 +14,7 @@ df: pd.DataFrame = conn.read(spreadsheet=url, worksheet=0)
 df = df.drop(840)
 df = df.drop_duplicates()
 
-make_header()
+# make_header()
 make_footer()
 
 with st.sidebar:
@@ -172,6 +172,28 @@ if selected == "Animation Data":
 
     st.altair_chart(runtime_rating_chart, use_container_width=True)
 
+    full_data_runtime_rating = st.checkbox('See full data', key=1)
+    runtime_rating_group_avg:pd.DataFrame
+    runtime_rating_group_avg_chart:alt.Chart
+    if full_data_runtime_rating: 
+        runtime_rating_group_avg = runtime_rating.groupby(by=['Runtime(minutes)']).mean().reset_index().sort_values(by=['Runtime(minutes)'])
+        runtime_rating_group_avg_chart = (
+            alt.Chart(runtime_rating_group_avg).mark_bar().encode(
+                y = alt.Y('User Rating').title('User Rating (Avg)'),
+                x = alt.X('Runtime(minutes):N')
+            )
+        )
+    else:
+        runtime_rating_group_avg = runtime_rating.groupby(by=['Runtime(minutes)']).mean().reset_index().sort_values(by=['Runtime(minutes)']).head(10)
+        runtime_rating_group_avg_chart = (
+            alt.Chart(runtime_rating_group_avg).mark_bar().encode(
+                x = alt.X('User Rating').title('User Rating (Avg)'),
+                y = alt.Y('Runtime(minutes):N')
+            )
+        )
+        
+    st.altair_chart(runtime_rating_group_avg_chart, use_container_width=True)
+
     st.divider()
 
     st.subheader('Rating Gross Correlation')
@@ -192,6 +214,28 @@ if selected == "Animation Data":
     )
 
     st.altair_chart(rating_gross_chart, use_container_width=True)
+
+    full_data_rating_gross = st.checkbox('See full data', key=2)
+    rating_gross_group_avg:pd.DataFrame
+    rating_gross_group_avg_chart:alt.Chart
+    if full_data_rating_gross:
+        rating_gross_group_avg = rating_gross.groupby(by=['User Rating']).mean().reset_index().sort_values(by=['User Rating'])
+        rating_gross_group_avg_chart = (
+            alt.Chart(rating_gross_group_avg).mark_bar().encode(
+                x = alt.X('User Rating:N'),
+                y = alt.Y('Gross').title('Gross (Avg)')
+            )
+        )
+    else:
+        rating_gross_group_avg = rating_gross.groupby(by=['User Rating']).mean().reset_index().sort_values(by=['User Rating']).head(10)
+        rating_gross_group_avg_chart = (
+            alt.Chart(rating_gross_group_avg).mark_bar().encode(
+                y = alt.Y('User Rating:N'),
+                x = alt.X('Gross').title('Gross (Avg)')
+            )
+        )
+
+    st.altair_chart(rating_gross_group_avg_chart, use_container_width=True)
 
 if selected == "Animation Filter":
     st.header(':rainbow[Animation Filter]')
@@ -235,9 +279,3 @@ if selected == "Average Rating Animation":
             st.write(f"Average Rating for '{title_search}': {predicted_rating:.2f}")
         else:
             st.write(predicted_rating)
-
-
-
-
-
-
