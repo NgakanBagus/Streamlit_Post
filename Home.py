@@ -14,7 +14,7 @@ df: pd.DataFrame = conn.read(spreadsheet=url, worksheet=0)
 df = df.drop(840)
 df = df.drop_duplicates()
 
-# make_header()
+make_header()
 make_footer()
 
 with st.sidebar:
